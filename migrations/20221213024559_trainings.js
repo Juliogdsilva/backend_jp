@@ -1,4 +1,4 @@
-const tableName = 'sellers_card';
+const tableName = 'trainings';
 
 /* eslint-disable func-names */
 /**
@@ -8,9 +8,9 @@ const tableName = 'sellers_card';
 exports.up = function (knex) {
   return knex.schema.createTable(tableName, (t) => {
     t.increments('id').primary().unsigned();
-    t.integer('seller_id').unsigned().notNullable().references('id')
-      .inTable('sellers');
-    t.string('code').notNullable();
+    t.string('nome').unique().notNullable();
+    t.timestamp('time').nullable();
+    t.text('description').nullable();
     t.timestamp('created_at').notNullable().defaultTo(knex.fn.now());
   });
 };
