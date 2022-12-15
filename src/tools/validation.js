@@ -41,12 +41,6 @@ module.exports = () => {
     throw msg;
   }
 
-  function isCNPJValid(value, msg) {
-    const isFormatted = /^(\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2})|(\d{14})$/.test(value);
-    if (isFormatted) return true;
-    throw msg;
-  }
-
   function isCepValid(value, msg) {
     const isFormatted = /^(\d{5}-\d{3})|(\d{8})$/.test(value);
     if (isFormatted) return true;
@@ -66,7 +60,6 @@ module.exports = () => {
     isEmailValid,
     isPasswordValid,
     isCPFValid,
-    isCNPJValid,
     isCepValid,
     justNumbers,
   };

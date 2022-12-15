@@ -1,19 +1,9 @@
 module.exports = (app) => {
-  const haveRole = (role) => async (req, res, next) => {
-    const userRole = req.user.role;
-    if (!userRole) return res.status(404).send({ msg: 'Função não localizada.', status: true });
-
-    if (userRole === role || role === 'all' || userRole === 'root') return next();
-    return res.status(401).send({ msg: 'Nível de permissão negada!', status: true });
-  };
-
-  /*eslint-disable */
   const havePermission = (permission) => async (req, res, next) => {
     const { user } = req;
-    const user_id = user.id;
 
     const userPermissions = await app.db('user_permissions')
-      .where({ user_id })
+      .where({ id: user.id })
       .join('permissions', 'user_permissions.permission_id', 'permissions.id')
       .select('permissions.name')
       .catch((err) => {
@@ -27,7 +17,6 @@ module.exports = (app) => {
   };
 
   return {
-    haveRole,
     havePermission,
   };
 };
