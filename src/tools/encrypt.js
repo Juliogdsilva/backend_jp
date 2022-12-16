@@ -6,7 +6,14 @@ module.exports = () => {
     return bcrypt.hashSync(password, salt);
   }
 
+  function comparePassword(valueA, valueB) {
+    const isMatch = bcrypt.compareSync(valueA, valueB);
+    if (!isMatch) return false;
+    return true;
+  }
+
   return {
     encryptPassword,
+    comparePassword,
   };
 };

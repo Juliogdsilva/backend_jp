@@ -19,7 +19,6 @@ module.exports = (app) => {
   });
 
   passport.use(strategy);
-
   return {
     authenticate: () => passport.authenticate('jwt', { session: false }),
   };
