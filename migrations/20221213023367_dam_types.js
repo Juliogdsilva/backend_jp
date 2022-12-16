@@ -1,4 +1,4 @@
-const tableName = 'dam_type';
+const tableName = 'dam_types';
 
 /* eslint-disable func-names */
 /**

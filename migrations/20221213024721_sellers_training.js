@@ -11,7 +11,7 @@ exports.up = function (knex) {
     t.integer('seller_id').unsigned().notNullable().references('id')
       .inTable('sellers');
     t.integer('training_id').unsigned().notNullable().references('id')
-      .inTable('training_sessions');
+      .inTable('trainings');
     t.timestamp('created_at').notNullable().defaultTo(knex.fn.now());
   });
 };
