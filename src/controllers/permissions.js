@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 module.exports = (app) => {
   const {
     existsOrError,
@@ -8,11 +9,12 @@ module.exports = (app) => {
     isCPFValid,
     justNumbers,
   } = app.src.tools.validation;
-  const { modelTrainings } = app.src.models.trainings;
 
-  const userPermissions = async (req, res) => {
+  // const userPermissions = async (req, res) => {
+  //   const permissions = req.body.permissions
+  //   const user_id = req.body.user_id
 
-  };
+  // };
 
   const get = async (req, res) => {
     const permissions = await app.db('permissions')
@@ -26,7 +28,7 @@ module.exports = (app) => {
   };
 
   return {
-    userPermissions,
+    // userPermissions,
     get,
   };
 };

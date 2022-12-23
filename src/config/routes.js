@@ -48,10 +48,18 @@ module.exports = (app) => {
   app.route('/accreditation')
     .post(controllers.accreditation.accreditation);
 
+  app.route('/seller_training')
+    .post(controllers.accreditation.saveTraining);
+
   // ------  PERMISSIONS ------
   app.route('/permissions')
     // .post(controllers.permissions.save)
     .get(controllers.permissions.get);
+
+  // ------  PERMISSIONS ------
+  app.route('/counts')
+    // .post(controllers.permissions.save)
+    .get(controllers.counts.getCounts);
 
   // ------  COMMON REQUESTS ------
   app.get('/version', (req, res) => res.status(200).send({ version: pjson.version }));

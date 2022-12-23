@@ -71,9 +71,10 @@ module.exports = (app) => {
     const perPage = Number(req.query.perPage) || 10;
 
     const search = req.query.search || false;
+    const card = req.query.card || false;
 
     const sellers = await app.db('sellers as s')
-      .select('s.*', 'sd.name as dam', 'ss.name as signature', 'sc.code as card')
+      .select('s.*', 'sd.name as dam', 'ss.signature', 'sc.code as card', 'st.training_id as training')
       .modify((query) => {
         // eslint-disable-next-line eqeqeq
         if (search && search != 'null') {
@@ -82,10 +83,17 @@ module.exports = (app) => {
             this.orWhere('s.cpf', 'like', `%${search}%`);
           });
         }
+        // eslint-disable-next-line eqeqeq
+        if (card && card != 'null') {
+          query.andWhere(function () {
+            this.where('sc.code', 'like', `%${card}%`);
+          });
+        }
       })
       .leftJoin('sellers_dam as sd', 'sd.seller_id', 's.id') // FOTO DAM
       .leftJoin('sellers_signature as ss', 'ss.seller_id', 's.id') // FOTO ASSINATURA
       .leftJoin('sellers_card as sc', 'sc.seller_id', 's.id') // CODE CARTÃO
+      .leftJoin('sellers_training as st', 'st.seller_id', 's.id') // ID TREINAMENTO
       .whereNull('s.deleted_at')
       .paginate({ perPage, currentPage, isLengthAware: true })
       .then()
@@ -95,6 +103,10 @@ module.exports = (app) => {
       });
 
     return res.status(200).send(sellers);
+  };
+
+  const getByCard = async (req, res) => {
+
   };
 
   return {
