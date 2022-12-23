@@ -1,19 +1,59 @@
 const pjson = require('../../package.json');
 
 module.exports = (app) => {
-  // const controllers = { ...app.src.controllers };
+  const controllers = { ...app.src.controllers };
 
-  // USERS
-  // app.route('/users')
-  //   .post(controllers.users.saveUsers)
-  //   .get(controllers.users.getAllUsers);
+  // ------  AUTH REQUESTS ------
+  app.post('/signin', controllers.auth.signin);
+  app.post('/validate_token', controllers.auth.validateToken);
 
-  // app.route('/users/:id')
-  //   .get(controllers.users.getUserById)
-  //   .put(controllers.users.putUser)
+  // ------  USERS ------
+  app.route('/users')
+    .post(controllers.users.save)
+    .get(controllers.users.get);
+
+  app.route('/users/:id')
+    //   .get(controllers.users.getUserById)
+    .put(controllers.users.save);
   //   .delete(controllers.users.deleteUser);
 
-  // COMMON REQUESTS
+  // ------  TRAININGS ------
+  app.route('/trainings')
+    .post(controllers.trainings.save)
+    .get(controllers.trainings.get);
+
+  app.route('/trainings/:id')
+    .put(controllers.trainings.save);
+
+  // ------  KITS ------
+  app.route('/kits')
+    .post(controllers.kits.save)
+    .get(controllers.kits.get);
+
+  app.route('/kits/:id')
+    .put(controllers.kits.save);
+
+  // ------  SELLERS ------
+  app.route('/sellers')
+    .post(controllers.sellers.save)
+    .get(controllers.sellers.get);
+
+  app.route('/sellers/:id')
+    .put(controllers.sellers.save);
+
+  // ------  ACCREDITATION ------
+  app.route('/block_seller/:id')
+    .post(controllers.accreditation.blockSeller);
+
+  app.route('/accreditation')
+    .post(controllers.accreditation.accreditation);
+
+  // ------  PERMISSIONS ------
+  app.route('/permissions')
+    // .post(controllers.permissions.save)
+    .get(controllers.permissions.get);
+
+  // ------  COMMON REQUESTS ------
   app.get('/version', (req, res) => res.status(200).send({ version: pjson.version }));
   app.use('*', (req, res) => res.status(404).send({ msg: 'requested endpoint not found' }));
 };

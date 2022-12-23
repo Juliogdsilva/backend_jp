@@ -8,8 +8,9 @@ const tableName = 'kits';
 exports.up = function (knex) {
   return knex.schema.createTable(tableName, (t) => {
     t.increments('id').primary().unsigned();
-    t.string('nome').unique().notNullable();
+    t.string('name').unique().notNullable();
     t.string('type').unique().nullable();
+    t.integer('quantity').notNullable().defaultTo(0);
     t.text('description').nullable();
     t.timestamp('created_at').notNullable().defaultTo(knex.fn.now());
   });

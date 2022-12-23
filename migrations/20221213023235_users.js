@@ -9,8 +9,8 @@ exports.up = function (knex) {
   return knex.schema.createTable(tableName, (t) => {
     t.increments('id').primary().unsigned();
     t.string('name', 100).notNullable();
-    t.string('cpf', 80).notNullable().unique();
-    t.string('email', 100).nullable();
+    t.string('cpf', 80).nullable();
+    t.string('email', 100).notNullable().unique();
     t.string('password', 100).notNullable();
     t.string('gender', 50).nullable();
     t.string('phone', 80).nullable();
