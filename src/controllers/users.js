@@ -76,7 +76,7 @@ module.exports = (app) => {
     const search = req.query.search || false;
 
     const users = await app.db('users')
-      .select('*')
+      .select('id', 'name', 'cpf', 'email', 'gender', 'phone')
       .modify((query) => {
         // eslint-disable-next-line eqeqeq
         if (search && search != 'null') {

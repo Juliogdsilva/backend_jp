@@ -72,6 +72,19 @@ module.exports = (app) => {
         throw err;
       });
 
+    if (items.photo) {
+      await app.db('sellers_dam')
+        .insert({
+          seller_id: items.id,
+          photo: items.photo,
+        })
+        .then()
+        .catch((err) => {
+          res.status(500).send({ msg: 'Erro inesperado', status: true });
+          throw err;
+        });
+    }
+
     await app.db('sellers_card')
       .insert({
         seller_id: items.id,
@@ -109,9 +122,57 @@ module.exports = (app) => {
     res.status(204).send();
   };
 
+  const saveKit = async (req, res) => {
+    const items = { ...req.body };
+    try {
+      existsOrError(items.id, 'Código do Ambulante não informado.');
+      existsOrError(items.kit, 'Kit do Ambulante não informado.');
+    } catch (msg) {
+      res.status(400).send(msg);
+    }
+
+    const products = await app.db('products')
+      .select('*')
+      .where({ kit_id: items.kit })
+      .then()
+      .catch((err) => {
+        res.status(500).send({ msg: 'Erro inesperado', status: true });
+        throw err;
+      });
+
+    products.forEach((product) => {
+      // eslint-disable-next-line no-plusplus
+      for (let i = 0; i < product.kit_quantity; i++) {
+        app.db('sellers_products')
+          .insert({
+            seller_id: items.id,
+            product_id: product.id,
+          })
+          .then()
+          .catch((err) => {
+            res.status(500).send({ msg: 'Erro inesperado', status: true });
+            throw err;
+          });
+      }
+    });
+
+    await app.db('seller_withdrawal')
+      .insert({
+        seller_id: items.id,
+      })
+      .then()
+      .catch((err) => {
+        res.status(500).send({ msg: 'Erro inesperado', status: true });
+        throw err;
+      });
+
+    res.status(204).send();
+  };
+
   return {
     blockSeller,
     accreditation,
     saveTraining,
+    saveKit,
   };
 };

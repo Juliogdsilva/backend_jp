@@ -33,6 +33,14 @@ module.exports = (app) => {
   app.route('/kits/:id')
     .put(controllers.kits.save);
 
+  // ------  PRODUCTS ------
+  app.route('/products')
+    .post(controllers.products.save)
+    .get(controllers.products.get);
+
+  app.route('/products/:id')
+    .put(controllers.products.save);
+
   // ------  SELLERS ------
   app.route('/sellers')
     .post(controllers.sellers.save)
@@ -51,6 +59,9 @@ module.exports = (app) => {
   app.route('/seller_training')
     .post(controllers.accreditation.saveTraining);
 
+  app.route('/seller_kit')
+    .post(controllers.accreditation.saveKit);
+
   // ------  PERMISSIONS ------
   app.route('/permissions')
     // .post(controllers.permissions.save)
@@ -58,8 +69,14 @@ module.exports = (app) => {
 
   // ------  PERMISSIONS ------
   app.route('/counts')
-    // .post(controllers.permissions.save)
     .get(controllers.counts.getCounts);
+
+  // ------  REPORTS ------
+  app.route('/reports')
+    .get(controllers.reports.reports);
+
+  app.route('/report_products')
+    .get(controllers.products.report);
 
   // ------  COMMON REQUESTS ------
   app.get('/version', (req, res) => res.status(200).send({ version: pjson.version }));

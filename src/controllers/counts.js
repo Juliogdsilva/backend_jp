@@ -35,7 +35,7 @@ module.exports = (app) => {
         throw err;
       });
 
-    const sellersKits = await app.db('sellers_kits')
+    const sellersKits = await app.db('seller_withdrawal')
       .count('id as count')
       .then()
       .catch((err) => {

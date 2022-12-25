@@ -20,6 +20,7 @@ module.exports = (app) => {
     if (req.params.id) seller.id = req.params.id;
 
     try {
+      if (seller.cpf) seller.cpf = await justNumbers(seller.cpf);
       if (!seller.id) {
         existsOrError(seller.cpf, 'CPF não informado');
         isCPFValid(seller.cpf, 'CPF Inválido');
@@ -74,7 +75,7 @@ module.exports = (app) => {
     const card = req.query.card || false;
 
     const sellers = await app.db('sellers as s')
-      .select('s.*', 'sd.name as dam', 'ss.signature', 'sc.code as card', 'st.training_id as training')
+      .select('s.*', 'sd.name as dam', 'ss.signature', 'sc.code as card', 'st.training_id as training', 'sw.id as kit')
       .modify((query) => {
         // eslint-disable-next-line eqeqeq
         if (search && search != 'null') {
@@ -94,6 +95,7 @@ module.exports = (app) => {
       .leftJoin('sellers_signature as ss', 'ss.seller_id', 's.id') // FOTO ASSINATURA
       .leftJoin('sellers_card as sc', 'sc.seller_id', 's.id') // CODE CARTÃO
       .leftJoin('sellers_training as st', 'st.seller_id', 's.id') // ID TREINAMENTO
+      .leftJoin('seller_withdrawal as sw', 'sw.seller_id', 's.id') // RETIRADA KIT
       .whereNull('s.deleted_at')
       .paginate({ perPage, currentPage, isLengthAware: true })
       .then()
@@ -103,10 +105,6 @@ module.exports = (app) => {
       });
 
     return res.status(200).send(sellers);
-  };
-
-  const getByCard = async (req, res) => {
-
   };
 
   return {
