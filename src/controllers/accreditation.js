@@ -25,7 +25,7 @@ module.exports = (app) => {
     }
 
     const existsBlock = await app.db('sellers_block')
-      .where({ seller_id: seller.seller_id }).whereNull('deleted_at').first();
+      .where({ seller_id: seller.seller_id }).first();
     if (existsBlock) return res.status(204).send({ block: true });
 
     app.db('sellers_block')
@@ -63,7 +63,7 @@ module.exports = (app) => {
 
     // Assinatura
     let existsSeller = await app.db('sellers_signature')
-      .where({ seller_id: items.id }).whereNull('deleted_at').first();
+      .where({ seller_id: items.id }).first();
 
     if (items.signature) {
       if (existsSeller) {
@@ -96,7 +96,7 @@ module.exports = (app) => {
 
     // Assinatura
     existsSeller = await app.db('sellers_dam')
-      .where({ seller_id: items.id }).whereNull('deleted_at').first();
+      .where({ seller_id: items.id }).first();
 
     if (items.photo) {
       if (existsSeller) {
@@ -127,7 +127,7 @@ module.exports = (app) => {
 
     // Cartão
     existsSeller = await app.db('sellers_card')
-      .where({ seller_id: items.id }).whereNull('deleted_at').first();
+      .where({ seller_id: items.id }).first();
 
     if (items.card) {
       if (existsSeller) {
