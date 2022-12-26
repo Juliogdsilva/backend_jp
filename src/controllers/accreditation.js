@@ -55,7 +55,7 @@ module.exports = (app) => {
         name: items.name,
         phone: items.phone,
         updated_by: req.user.id,
-        deleted_at: new Date(),
+        updated_at: new Date(),
       })
       .where({ id: items.id })
       .then()

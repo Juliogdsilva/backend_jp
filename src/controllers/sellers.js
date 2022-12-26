@@ -70,8 +70,6 @@ module.exports = (app) => {
     const search = req.query.search || false;
     const card = req.query.card || false;
 
-    console.log(search);
-
     const sellers = await app.db('sellers as s')
       .select('s.*', 'sd.photo as dam', 'ss.signature', 'sc.code as card', 'st.training_id as training', 'sw.id as kit')
       .modify((query) => {
