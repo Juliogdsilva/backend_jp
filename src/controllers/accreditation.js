@@ -54,6 +54,7 @@ module.exports = (app) => {
       .update({
         name: items.name,
         phone: items.phone,
+        updated_by: req.user.id,
       })
       .where({ id: items.id })
       .then()
