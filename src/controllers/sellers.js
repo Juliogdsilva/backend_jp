@@ -25,10 +25,6 @@ module.exports = (app) => {
         existsOrError(seller.cpf, 'CPF não informado');
         isCPFValid(seller.cpf, 'CPF Inválido');
         existsOrError(seller.name, 'Nome não informado');
-        existsOrError(seller.phone, 'Telefone não informado');
-        existsOrError(seller.dam_number, 'Numero da DAM não informada');
-        existsOrError(seller.dam_type, 'Tipo da Dam não informada');
-        existsOrError(seller.neighborhood, 'Bairro não informado');
 
         const existsClient = await app.db('sellers')
           .where({ cpf: seller.cpf }).whereNull('deleted_at').first();
