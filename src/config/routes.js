@@ -54,15 +54,15 @@ module.exports = (app) => {
     .post(controllers.accreditation.blockSeller);
 
   app.route('/accreditation')
-    .all(app.config.passport.authenticate())
+    .all(app.src.config.passport.authenticate())
     .post(controllers.accreditation.accreditation);
 
   app.route('/seller_training')
-    .all(app.config.passport.authenticate())
+    .all(app.src.config.passport.authenticate())
     .post(controllers.accreditation.saveTraining);
 
   app.route('/seller_kit')
-    .all(app.config.passport.authenticate())
+    .all(app.src.config.passport.authenticate())
     .post(controllers.accreditation.saveKit);
 
   // ------  PERMISSIONS ------
