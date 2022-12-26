@@ -47,6 +47,7 @@ module.exports = (app) => {
       existsOrError(items.card, 'Qrcode do Ambulante não informado.');
     } catch (msg) {
       res.status(400).send(msg);
+      throw msg;
     }
 
     await app.db('sellers')
