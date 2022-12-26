@@ -61,40 +61,100 @@ module.exports = (app) => {
         throw err;
       });
 
-    await app.db('sellers_signature')
-      .insert({
-        seller_id: items.id,
-        signature: items.signature,
-      })
-      .then()
-      .catch((err) => {
-        res.status(500).send({ msg: 'Erro inesperado', status: true });
-        throw err;
-      });
+    // Assinatura
+    let existsSeller = await app.db('sellers_signature')
+      .where({ seller_id: items.id }).whereNull('deleted_at').first();
 
-    if (items.photo) {
-      await app.db('sellers_dam')
-        .insert({
-          seller_id: items.id,
-          photo: items.photo,
-        })
-        .then()
-        .catch((err) => {
-          res.status(500).send({ msg: 'Erro inesperado', status: true });
-          throw err;
-        });
+    if (items.signature) {
+      if (existsSeller) {
+        await app.db('sellers_signature')
+          .update({
+            seller_id: items.id,
+            signature: items.signature,
+          })
+          .where({ seller_id: items.id })
+          .then()
+          .catch((err) => {
+            res.status(500).send({ msg: 'Erro inesperado', status: true });
+            throw err;
+          });
+      } else {
+        await app.db('sellers_signature')
+          .insert({
+            seller_id: items.id,
+            signature: items.signature,
+          })
+          .then()
+          .catch((err) => {
+            res.status(500).send({ msg: 'Erro inesperado', status: true });
+            throw err;
+          });
+      }
     }
 
-    await app.db('sellers_card')
-      .insert({
-        seller_id: items.id,
-        code: items.card,
-      })
-      .then()
-      .catch((err) => {
-        res.status(500).send({ msg: 'Erro inesperado', status: true });
-        throw err;
-      });
+    // FOTO DAM
+
+    // Assinatura
+    existsSeller = await app.db('sellers_dam')
+      .where({ seller_id: items.id }).whereNull('deleted_at').first();
+
+    if (items.photo) {
+      if (existsSeller) {
+        await app.db('sellers_dam')
+          .update({
+            seller_id: items.id,
+            photo: items.photo,
+          })
+          .where({ seller_id: items.id })
+          .then()
+          .catch((err) => {
+            res.status(500).send({ msg: 'Erro inesperado', status: true });
+            throw err;
+          });
+      } else {
+        await app.db('sellers_dam')
+          .insert({
+            seller_id: items.id,
+            photo: items.photo,
+          })
+          .then()
+          .catch((err) => {
+            res.status(500).send({ msg: 'Erro inesperado', status: true });
+            throw err;
+          });
+      }
+    }
+
+    // Cartão
+    existsSeller = await app.db('sellers_card')
+      .where({ seller_id: items.id }).whereNull('deleted_at').first();
+
+    if (items.card) {
+      if (existsSeller) {
+        await app.db('sellers_card')
+          .update({
+            seller_id: items.id,
+            code: items.card,
+          })
+          .where({ seller_id: items.id })
+          .then()
+          .catch((err) => {
+            res.status(500).send({ msg: 'Erro inesperado', status: true });
+            throw err;
+          });
+      } else {
+        await app.db('sellers_card')
+          .insert({
+            seller_id: items.id,
+            code: items.card,
+          })
+          .then()
+          .catch((err) => {
+            res.status(500).send({ msg: 'Erro inesperado', status: true });
+            throw err;
+          });
+      }
+    }
 
     res.status(204).send();
   };
