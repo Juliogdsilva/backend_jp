@@ -188,7 +188,7 @@ module.exports = (app) => {
       existsOrError(items.id, 'Código do Ambulante não informado.');
       existsOrError(items.kit, 'Kit do Ambulante não informado.');
     } catch (msg) {
-      res.status(400).send(msg);
+      return res.status(400).send(msg);
     }
 
     const products = await app.db('products')
@@ -226,7 +226,7 @@ module.exports = (app) => {
         throw err;
       });
 
-    res.status(204).send();
+    return res.status(204).send();
   };
 
   return {
