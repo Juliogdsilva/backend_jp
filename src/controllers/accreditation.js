@@ -74,6 +74,8 @@ module.exports = (app) => {
           .update({
             seller_id: items.id,
             signature: items.signature,
+            updated_by: req.user.id,
+            updated_at: new Date(),
           })
           .where({ seller_id: items.id })
           .then()
@@ -86,6 +88,8 @@ module.exports = (app) => {
           .insert({
             seller_id: items.id,
             signature: items.signature,
+            updated_by: req.user.id,
+            updated_at: new Date(),
           })
           .then()
           .catch((err) => {
@@ -107,6 +111,8 @@ module.exports = (app) => {
           .update({
             seller_id: items.id,
             photo: items.photo,
+            updated_by: req.user.id,
+            updated_at: new Date(),
           })
           .where({ seller_id: items.id })
           .then()
@@ -119,6 +125,8 @@ module.exports = (app) => {
           .insert({
             seller_id: items.id,
             photo: items.photo,
+            updated_by: req.user.id,
+            updated_at: new Date(),
           })
           .then()
           .catch((err) => {
@@ -138,6 +146,8 @@ module.exports = (app) => {
           .update({
             seller_id: items.id,
             code: items.card,
+            updated_by: req.user.id,
+            updated_at: new Date(),
           })
           .where({ seller_id: items.id })
           .then()
@@ -150,6 +160,8 @@ module.exports = (app) => {
           .insert({
             seller_id: items.id,
             code: items.card,
+            updated_by: req.user.id,
+            updated_at: new Date(),
           })
           .then()
           .catch((err) => {
@@ -167,6 +179,10 @@ module.exports = (app) => {
     try {
       existsOrError(items.id, 'Código do Ambulante não informado.');
       existsOrError(items.training, 'Treinamento do Ambulante não informado.');
+
+      const existsSeller = await app.db('sellers_training')
+        .where({ seller_id: items.id }).first();
+      notExistsOrError(existsSeller, 'Ambulante já treinado');
     } catch (msg) {
       res.status(400).send(msg);
     }
@@ -175,6 +191,8 @@ module.exports = (app) => {
       .insert({
         seller_id: items.id,
         training_id: items.training,
+        updated_by: req.user.id,
+        updated_at: new Date(),
       })
       .then()
       .catch((err) => {
@@ -190,6 +208,10 @@ module.exports = (app) => {
     try {
       existsOrError(items.id, 'Código do Ambulante não informado.');
       existsOrError(items.kit, 'Kit do Ambulante não informado.');
+
+      const existsSeller = await app.db('seller_withdrawal')
+        .where({ seller_id: items.id }).first();
+      notExistsOrError(existsSeller, 'Ambulante já retirou o Kit');
     } catch (msg) {
       return res.status(400).send(msg);
     }
@@ -222,6 +244,8 @@ module.exports = (app) => {
     await app.db('seller_withdrawal')
       .insert({
         seller_id: items.id,
+        updated_by: req.user.id,
+        updated_at: new Date(),
       })
       .then()
       .catch((err) => {
