@@ -71,7 +71,7 @@ module.exports = (app) => {
     const card = req.query.card || false;
 
     const sellers = await app.db('sellers as s')
-      .select('s.*', 'sd.photo as dam', 'ss.signature', 'sc.code as card', 'st.training_id as training', 'sw.id as kit')
+      .select('s.*', 'sd.id as dam', 'ss.id as signature', 'sc.code as card', 'st.training_id as training', 'sw.id as kit')
       .modify((query) => {
         // eslint-disable-next-line eqeqeq
         if (search && search != 'null') {
