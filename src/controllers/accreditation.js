@@ -46,7 +46,7 @@ module.exports = (app) => {
       existsOrError(items.signature, 'Assinatura do Ambulante não informado.');
       existsOrError(items.card, 'Qrcode do Ambulante não informado.');
     } catch (msg) {
-      res.status(400).send(msg);
+      res.status(400).send({ msg });
       throw msg;
     }
 
