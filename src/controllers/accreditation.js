@@ -105,36 +105,38 @@ module.exports = (app) => {
     existsSeller = await app.db('sellers_dam')
       .where({ seller_id: items.id }).first();
 
-    if (items.photo) {
-      if (existsSeller) {
-        await app.db('sellers_dam')
-          .update({
-            seller_id: items.id,
-            photo: items.photo,
-            updated_by: req.user.id,
-            updated_at: new Date(),
-          })
-          .where({ seller_id: items.id })
-          .then()
-          .catch((err) => {
-            res.status(500).send({ msg: 'Erro inesperado', status: true });
-            throw err;
-          });
-      } else {
-        await app.db('sellers_dam')
-          .insert({
-            seller_id: items.id,
-            photo: items.photo,
-            updated_by: req.user.id,
-            updated_at: new Date(),
-          })
-          .then()
-          .catch((err) => {
-            res.status(500).send({ msg: 'Erro inesperado', status: true });
-            throw err;
-          });
-      }
+    // if (items.photo) {
+    if (existsSeller) {
+      await app.db('sellers_dam')
+        .update({
+          seller_id: items.id,
+          photo: items.photo,
+          photo2: items.photo2,
+          updated_by: req.user.id,
+          updated_at: new Date(),
+        })
+        .where({ seller_id: items.id })
+        .then()
+        .catch((err) => {
+          res.status(500).send({ msg: 'Erro inesperado', status: true });
+          throw err;
+        });
+    } else {
+      await app.db('sellers_dam')
+        .insert({
+          seller_id: items.id,
+          photo: items.photo,
+          photo2: items.photo2,
+          updated_by: req.user.id,
+          updated_at: new Date(),
+        })
+        .then()
+        .catch((err) => {
+          res.status(500).send({ msg: 'Erro inesperado', status: true });
+          throw err;
+        });
     }
+    // }
 
     // Cartão
     existsSeller = await app.db('sellers_card')
@@ -256,10 +258,49 @@ module.exports = (app) => {
     return res.status(204).send();
   };
 
+  const withdrawn = async (req, res) => {
+    const items = { ...req.body };
+    try {
+      existsOrError(req.user.id, 'Código do retirante não informado.');
+      existsOrError(items.kit, 'Kit do Ambulante não informado.');
+    } catch (msg) {
+      return res.status(400).send(msg);
+    }
+
+    const products = await app.db('products')
+      .select('*')
+      .where({ kit_id: items.kit })
+      .then()
+      .catch((err) => {
+        res.status(500).send({ msg: 'Erro inesperado', status: true });
+        throw err;
+      });
+
+    products.forEach((product) => {
+      // eslint-disable-next-line no-plusplus
+      for (let i = 0; i < product.kit_quantity; i++) {
+        app.db('sellers_products')
+          .insert({
+            product_id: product.id,
+            withdrawn_by: req.user.id,
+            manual: 1,
+          })
+          .then()
+          .catch((err) => {
+            res.status(500).send({ msg: 'Erro inesperado', status: true });
+            throw err;
+          });
+      }
+    });
+
+    return res.status(204).send();
+  };
+
   return {
     blockSeller,
     accreditation,
     saveTraining,
     saveKit,
+    withdrawn,
   };
 };

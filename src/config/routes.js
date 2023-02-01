@@ -60,6 +60,11 @@ module.exports = (app) => {
     .put(controllers.sellers.save);
 
   // ------  ACCREDITATION ------
+  app.route('/withdrawn')
+    .all(app.src.config.passport.authenticate())
+    .post(controllers.accreditation.withdrawn);
+
+  // ------  ACCREDITATION ------
   app.route('/block_seller/:id')
     .all(app.src.config.passport.authenticate())
     .post(controllers.accreditation.blockSeller);
