@@ -5,6 +5,7 @@ module.exports = (app) => {
 
   // ------  AUTH REQUESTS ------
   app.post('/signin', controllers.auth.signin);
+  app.post('/signup', controllers.participants.save);
   app.post('/validate_token', controllers.auth.validateToken);
 
   // ------  USERS ------
