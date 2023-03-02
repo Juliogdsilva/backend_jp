@@ -34,7 +34,7 @@ module.exports = (app) => {
 
     const participants = await app.db('participants')
       .select('*')
-      .whereNull('s.deleted_at')
+      .whereNull('deleted_at')
       .then()
       .catch((err) => {
         res.status(500).send({ msg: 'Erro inesperado', status: true });
