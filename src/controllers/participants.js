@@ -27,7 +27,7 @@ module.exports = (app) => {
         existsOrError(participants.email, 'E-mail não informado');
         isEmailValid(participants.email, 'E-mail inválido');
         existsOrError(data.confirmEmail, 'Confirmação de e-mail não informada');
-        equalsOrError(participants.password, data.confirmEmail, 'E-mails não conferem');
+        equalsOrError(participants.email, data.confirmEmail, 'E-mails não conferem');
         const existsClient = await app.db('participants')
           .where({ email: participants.email }).whereNull('deleted_at').first();
         notExistsOrError(existsClient, 'E-mail em uso');
