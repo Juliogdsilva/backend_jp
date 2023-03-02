@@ -27,8 +27,7 @@ module.exports = (app) => {
     .get(controllers.permissions.get);
 
   // ------  REPORTS ------
-  app.route('/reports')
-    .all(app.src.config.passport.authenticate())
+  app.route('/reports/9Osz93wjG')
     .get(controllers.reports.reports);
 
   // ------  COMMON REQUESTS ------

@@ -19,6 +19,7 @@ module.exports = () => {
       departure_date: item.departure_date,
       departure_time: item.arrival_time,
       flight_number: item.flight_number,
+      flight_number_departure: item.flight_number_departure,
       have_allergy: item.have_allergy,
       allergy: item.allergy,
       password: item.password,

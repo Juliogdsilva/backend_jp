@@ -25,11 +25,12 @@ exports.up = function (knex) {
     t.string('departure_date', 80).nullable();
     t.string('departure_time', 80).nullable();
     t.string('flight_number', 80).nullable();
+    t.string('flight_number_departure', 80).nullable();
     t.string('have_allergy', 80).nullable();
     t.string('allergy', 80).nullable();
     t.string('password', 100).notNullable();
     t.string('registration_fee', 80).nullable();
-    t.string('letter', 80).nullable();
+    t.boolean('letter', 80).nullable();
     t.string('status', 50).notNullable().defaultTo('wait_payment');
     t.timestamp('created_at').notNullable().defaultTo(knex.fn.now());
     t.timestamp('updated_at').nullable().defaultTo(knex.fn.now());
