@@ -15,7 +15,7 @@ module.exports = (app) => {
       { header: 'Empresa', key: 'company', width: 15 },
       { header: 'Acompanhante?', key: 'companion', width: 10 },
       { header: 'T. Doc', key: 'document_type', width: 15 },
-      { header: 'N. Doc', key: 'document_number', width: 15 },
+      { header: 'N. Doc', key: 'doc_number', width: 15 },
       { header: 'N. Esp?', key: 'special_needs', width: 10 },
       { header: 'N. Esp', key: 'special_needs_describe', width: 15 },
       { header: 'Data Voo ida', key: 'arrival_date', width: 10 },
