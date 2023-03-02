@@ -52,7 +52,7 @@ module.exports = (app) => {
         company: seller.company,
         companion: seller.companion,
         document_type: seller.document_type,
-        document_number: seller.document_number,
+        doc_number: seller.doc_number,
         special_needs: seller.special_needs,
         special_needs_describe: seller.special_needs_describe,
         arrival_date: seller.arrival_date,
