@@ -13,6 +13,7 @@ consign()
   .then('./src/config/permission.js')
   .then('./src/tools')
   .then('./src/models')
+  .then('./src/controllers/email.js')
   .then('./src/controllers')
   .then('./src/config/routes.js')
   .into(app);
