@@ -38,5 +38,46 @@ module.exports = (app) => {
       });
   };
 
-  return { sendMailWelcome };
+  // const sendPayment = async (email, name, text, link) => {
+  const sendMailPayment = async (req, res) => {
+    const data = { ...req.body };
+    if (!data.email || !data.name || !data.text || !data.link) return res.status(400).send({ msg: 'Dados não preenchidos' });
+
+    const request = mailjet
+      .post('send', { version: 'v3.1' })
+      .request({
+        Messages: [
+          {
+            From: {
+              Email: 'no-reply@responsiblegamingseminar.com.br',
+              Name: 'Responsible Gaming',
+            },
+            To: [
+              {
+                Email: `${data.email}`,
+                Name: `${data.name}`,
+              },
+            ],
+            TemplateID: 4629463,
+            TemplateLanguage: true,
+            Subject: 'Pagamento',
+            Variables: {
+              text: data.text,
+              link: data.link,
+            },
+          },
+        ],
+      });
+    request
+      .then(() => {
+        res.status(200).send();
+      })
+      .catch(() => {
+        res.status(500).send();
+      });
+
+    return true;
+  };
+
+  return { sendMailWelcome, sendMailPayment };
 };

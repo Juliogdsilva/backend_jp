@@ -30,6 +30,10 @@ module.exports = (app) => {
   app.route('/reports/9Osz93wjG')
     .get(controllers.reports.reports);
 
+  // ------  REPORTS ------
+  app.route('/payments/9Osz93wjG')
+    .post(controllers.email.sendMailPayment);
+
   // ------  COMMON REQUESTS ------
   app.get('/version', (req, res) => res.status(200).send({ version: pjson.version }));
   app.use('*', (req, res) => res.status(404).send({ msg: 'requested endpoint not found' }));
