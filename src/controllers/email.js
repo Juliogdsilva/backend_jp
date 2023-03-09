@@ -79,7 +79,7 @@ module.exports = (app) => {
     return true;
   };
 
-  const sendMailComplet = async (first_name, email, cod) => {
+  const sendMailComplet = async (name, email, cod) => {
     const request = mailjet
       .post('send', { version: 'v3.1' })
       .request({
@@ -92,7 +92,7 @@ module.exports = (app) => {
             To: [
               {
                 Email: `${email}`,
-                Name: `${first_name}`,
+                Name: `${name}`,
               },
             ],
             TemplateID: 4642399,

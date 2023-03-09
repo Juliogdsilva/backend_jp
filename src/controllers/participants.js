@@ -140,7 +140,7 @@ module.exports = (app) => {
     participant.status = 'ative';
     participant.updated_at = new Date();
 
-    sendMailComplet({ ...participant });
+    sendMailComplet(participant.first_name, participant.email, participant.id);
 
     delete participant.id;
     await app.db('participants')
