@@ -8,42 +8,31 @@ module.exports = (app) => {
 
   const signin = async (req, res) => {
     if (!req.body.email || !req.body.password) {
-      return res.status(400).send({ msg: 'Informe usuário e senha!', status: true });
+      return res.status(400).send({ msg: 'Informe usuário e senha!' });
     }
-    // req.body.cpf = await justNumbers(req.body.cpf);
 
-    const user = await app.db('users')
+    const user = await app.db('participants')
       .where({ email: req.body.email })
       .first()
       .catch((err) => {
-        res.status(500).send({ msg: 'Erro inesperado', status: true });
+        res.status(500).send({ msg: 'Erro inesperado' });
         throw err;
       });
 
-    if (!user) return res.status(400).send({ msg: 'Usuário ou Senha Inválidos', status: true });
-    if (user.deleted_at) return res.status(401).send({ msg: 'Usuário desativado! Entre em contato com o administrador', status: true });
-    // eslint-disable-next-line eqeqeq
-    if (user.status == 'blocked') return res.status(401).send({ msg: 'Usuário bloqueado! Entre em contato com o administrador', status: true });
+    if (!user) return res.status(400).send({ msg: 'Usuário ou Senha Inválidos' });
+    if (user.deleted_at) return res.status(401).send({ msg: 'Usuário desativado! Entre em contato com o administrador' });
 
     const isMatch = await comparePassword(req.body.password, user.password);
-    if (!isMatch) return res.status(401).send({ msg: 'Usuário ou Senha Inválidos', status: true });
-
-    const permissions = await app.db('user_permissions')
-      .where({ user_id: user.id })
-      .leftJoin('permissions', 'user_permissions.permission_id', 'permissions.id')
-      .select('permissions.name as permission', 'permissions.alias')
-      .catch((err) => {
-        res.status(500).send({ msg: 'Erro inesperado', status: true });
-        throw err;
-      });
+    if (!isMatch) return res.status(401).send({ msg: 'Usuário ou Senha Inválidos' });
 
     const now = Math.floor(Date.now() / 1000);
     const days = Number(process.env.DAYS_TOKEN) || 3;
 
     const payload = {
       id: user.id,
-      name: user.name,
-      permissions,
+      first_name: user.first_name,
+      last_name: user.last_name,
+      status: user.status,
       iat: now,
       exp: now + (60 * 60 * 24 * days),
     };
@@ -56,7 +45,7 @@ module.exports = (app) => {
 
   const validateToken = async (req, res) => {
     const userToken = req.body.token;
-    if (!userToken) return res.status(400).send({ msg: 'Token não informado', status: true });
+    if (!userToken) return res.status(400).send({ msg: 'Token não informado' });
 
     try {
       const token = await jwt.decode(userToken, authSecret);
@@ -65,10 +54,10 @@ module.exports = (app) => {
       }
     } catch (e) {
       // problema com o token
-      return res.status(500).send({ msg: 'Porfavor faça o login novamente.', status: true });
+      return res.status(500).send({ msg: 'Porfavor faça o login novamente.' });
     }
 
-    return res.status(500).send({ msg: 'Porfavor faça o login novamente.', status: true });
+    return res.status(500).send({ msg: 'Porfavor faça o login novamente.' });
   };
 
   return { signin, validateToken };

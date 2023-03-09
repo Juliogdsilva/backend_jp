@@ -6,12 +6,11 @@ module.exports = (app) => {
     equalsOrError,
     notEqualsOrError,
     isEmailValid,
-    isCPFValid,
     justNumbers,
   } = app.src.tools.validation;
   const { encryptPassword, comparePassword } = app.src.tools.encrypt;
   const { modelParticipants } = app.src.models.participants;
-  const { sendMailWelcome } = app.src.controllers.email;
+  const { sendMailWelcome, sendMailComplet } = app.src.controllers.email;
 
   const save = async (req, res) => {
     const participants = await modelParticipants(req.body);
@@ -108,8 +107,55 @@ module.exports = (app) => {
     return res.status(200).send(participants);
   };
 
+  const getById = async (req, res) => {
+    if (!req.originalUrl.startsWith('/participants')) return res.status(400).send({ msg: 'Nível de permissão negada!', status: true });
+    if (!req.params.id) return res.status(400).send({ msg: 'Código do Usuário não informado.', status: true });
+
+    const participant = await app.db('participants')
+      .select('id', 'first_name', 'last_name', 'email', 'phone', 'phone', 'birthdate', 'company', 'companion', 'document_type', 'doc_number', 'special_needs', 'special_needs_describe', 'arrival_date', 'arrival_time', 'departure_date', 'departure_time', 'flight_number', 'flight_number_departure', 'have_allergy', 'allergy')
+      .where({ id: req.params.id })
+      .whereNull('deleted_at')
+      .first()
+      .then()
+      .catch((err) => {
+        res.status(500).send({ msg: 'Erro inesperado', status: true });
+        throw err;
+      });
+
+    return res.status(200).send(participant);
+  };
+
+  const activeParticipants = async (req, res) => {
+    if (!req.originalUrl.startsWith('/active')) return res.status(400).send({ msg: 'Nível de permissão negada!', status: true });
+    if (!req.params.id) return res.status(400).send({ msg: 'Código do Usuário não informado.', status: true });
+
+    const participant = await app.db('participants')
+      .select('id', 'name', 'email')
+      .first()
+      .where({ id: req.params.id })
+      .whereNull('deleted_at');
+
+    if (!participant) return res.status(400).send({ msg: 'Participante não encontrado!', status: true });
+
+    participant.status = 'ative';
+    participant.updated_at = new Date();
+
+    await app.db('participants')
+      .update(participant)
+      .then()
+      .catch((err) => {
+        res.status(500).send({ msg: 'Erro inesperado', status: true });
+        throw err;
+      });
+
+    sendMailComplet(...participant);
+    return res.status(200).send();
+  };
+
   return {
     save,
     get,
+    getById,
+    activeParticipants,
   };
 };

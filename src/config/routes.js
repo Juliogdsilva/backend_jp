@@ -8,7 +8,7 @@ module.exports = (app) => {
   app.post('/signup', controllers.participants.save);
   app.post('/validate_token', controllers.auth.validateToken);
 
-  // ------  USERS ------
+  // ------  Participants ------
   app.route('/participants')
     .all(app.src.config.passport.authenticate())
     .post(controllers.participants.save)
@@ -16,7 +16,7 @@ module.exports = (app) => {
 
   app.route('/participants/:id')
     .all(app.src.config.passport.authenticate())
-    //   .get(controllers.participants.getparticipantById)
+    .get(controllers.participants.getById)
     .put(controllers.participants.save);
   //   .delete(controllers.participants.deleteparticipant);
 
@@ -26,6 +26,12 @@ module.exports = (app) => {
     // .post(controllers.permissions.save)
     .get(controllers.permissions.get);
 
+  // ------  CHATS ------
+  app.route('/chats/participants')
+    // .all(app.src.config.passport.authenticate())
+    // .post(controllers.permissions.save)
+    .get(controllers.chat.getParticipants);
+
   // ------  REPORTS ------
   app.route('/reports/9Osz93wjG')
     .get(controllers.reports.reports);
@@ -33,6 +39,10 @@ module.exports = (app) => {
   // ------  REPORTS ------
   app.route('/payments/9Osz93wjG')
     .post(controllers.email.sendMailPayment);
+
+  // ------  REPORTS ------
+  app.route('/active/9Osz93wjG/:id')
+    .post(controllers.participants.activeParticipants);
 
   // ------  COMMON REQUESTS ------
   app.get('/version', (req, res) => res.status(200).send({ version: pjson.version }));
