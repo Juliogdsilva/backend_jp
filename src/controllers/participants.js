@@ -130,7 +130,7 @@ module.exports = (app) => {
     if (!req.params.id) return res.status(400).send({ msg: 'Código do Usuário não informado.', status: true });
 
     const participant = await app.db('participants')
-      .select('id', 'name', 'email')
+      .select('id', 'first_name as name', 'email')
       .first()
       .where({ id: req.params.id })
       .whereNull('deleted_at');
