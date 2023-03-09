@@ -79,5 +79,40 @@ module.exports = (app) => {
     return true;
   };
 
-  return { sendMailWelcome, sendMailPayment };
+  const sendMailComplet = async (name, email, cod) => {
+    const request = mailjet
+      .post('send', { version: 'v3.1' })
+      .request({
+        Messages: [
+          {
+            From: {
+              Email: 'no-reply@responsiblegamingseminar.com.br',
+              Name: 'Responsible Gaming',
+            },
+            To: [
+              {
+                Email: `${email}`,
+                Name: `${name}`,
+              },
+            ],
+            TemplateID: 4642399,
+            TemplateLanguage: true,
+            Subject: 'Boas Noticias',
+            Variables: {
+              cod,
+            },
+          },
+        ],
+      });
+    request
+      .then(() => {
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+
+    return true;
+  };
+
+  return { sendMailWelcome, sendMailPayment, sendMailComplet };
 };

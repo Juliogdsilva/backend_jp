@@ -11,8 +11,10 @@ module.exports = (app) => {
     res.send = function (data) {
       const newData = {
         ...data,
-        status: true,
-        timestamp: new Date().getTime(),
+        info: {
+          status: true,
+          timestamp: new Date().getTime(),
+        },
       };
       res.send = oldSend;
       return res.send(newData);
