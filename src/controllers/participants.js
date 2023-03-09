@@ -140,15 +140,18 @@ module.exports = (app) => {
     participant.status = 'ative';
     participant.updated_at = new Date();
 
+    sendMailComplet(...participant);
+
+    delete participant.id;
     await app.db('participants')
       .update(participant)
+      .where({ id: req.params.id })
       .then()
       .catch((err) => {
         res.status(500).send({ msg: 'Erro inesperado', status: true });
         throw err;
       });
 
-    sendMailComplet(...participant);
     return res.status(200).send();
   };
 
