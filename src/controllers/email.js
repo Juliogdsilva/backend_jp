@@ -60,7 +60,7 @@ module.exports = (app) => {
             ],
             TemplateID: 4629463,
             TemplateLanguage: true,
-            Subject: 'Pagamento',
+            Subject: 'Instruções de Pagamento',
             Variables: {
               text: data.text,
               link: data.link,
