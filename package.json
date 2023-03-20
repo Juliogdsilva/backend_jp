@@ -13,6 +13,7 @@
     "eslint": "^7.32.0 || ^8.2.0",
     "exceljs": "^4.3.0",
     "express": "^4.18.2",
+    "http": "^0.0.1-security",
     "jwt-simple": "^0.5.6",
     "keygenerator": "^1.0.4",
     "knex": "^2.3.0",
@@ -24,6 +25,7 @@
     "passport-jwt": "^4.0.0",
     "sharp": "^0.31.2",
     "slugify": "^1.6.5",
+    "socket.io": "^4.6.1",
     "uuid": "^9.0.0"
   },
   "devDependencies": {

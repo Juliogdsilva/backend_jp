@@ -27,10 +27,10 @@ module.exports = (app) => {
     .get(controllers.permissions.get);
 
   // ------  CHATS ------
-  app.route('/chats/participants')
-    // .all(app.src.config.passport.authenticate())
-    // .post(controllers.permissions.save)
-    .get(controllers.chat.getParticipants);
+  // app.route('/chat')
+  // .all(app.src.config.passport.authenticate())
+  // .post(controllers.permissions.save)
+  // .get(controllers.chat.connectChat);
 
   // ------  REPORTS ------
   app.route('/reports/9Osz93wjG')
