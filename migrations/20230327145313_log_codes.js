@@ -1,4 +1,4 @@
-const tableName = 'users';
+const tableName = 'log_codes';
 
 /* eslint-disable func-names */
 /**
@@ -8,15 +8,13 @@ const tableName = 'users';
 exports.up = function (knex) {
   return knex.schema.createTable(tableName, (t) => {
     t.increments('id').primary().unsigned();
-    t.string('name', 100).notNullable();
-    t.string('cpf', 80).nullable();
-    t.string('email', 100).notNullable().unique();
-    t.string('password', 100).notNullable();
-    t.string('phone', 80).nullable();
-    t.string('status', 50).notNullable().defaultTo('ative');
+    t.integer('code_id').unsigned().notNullable().references('id')
+      .inTable('codes');
+    t.string('action').unique().notNullable();
+    t.text('description').nullable();
+    t.integer('created_by').unsigned().nullable().references('id')
+      .inTable('users');
     t.timestamp('created_at').notNullable().defaultTo(knex.fn.now());
-    t.timestamp('updated_at').nullable().defaultTo(knex.fn.now());
-    t.timestamp('deleted_at').nullable();
   });
 };
 

@@ -11,13 +11,15 @@ consign()
   .then('./src/config/passport.js')
   .then('./src/config/middlewares.js')
   .then('./src/config/permission.js')
-  .then('./src/tools')
+  .then('./src/tools/encrypt.js')
+  .then('./src/tools/generator.js')
+  .then('./src/tools/validation.js')
   .then('./src/models')
-  .then('./src/controllers/email.js')
   .then('./src/controllers')
+  .then('./src/tools/jobs.js')
   .then('./src/config/routes.js')
   .into(app);
 
-http.listen(port, () => {
+app.listen(port, () => {
   console.log(`Backend rodando na porta ${port}`);
 });

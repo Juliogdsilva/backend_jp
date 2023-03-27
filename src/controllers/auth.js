@@ -8,10 +8,10 @@ module.exports = (app) => {
 
   const signin = async (req, res) => {
     if (!req.body.email || !req.body.password) {
-      return res.status(400).send({ msg: 'Informe usuário e senha!' });
+      return res.status(400).send({ msg: 'Informe E-mail e senha!' });
     }
 
-    const user = await app.db('participants')
+    const user = await app.db('users')
       .where({ email: req.body.email })
       .first()
       .catch((err) => {
@@ -19,20 +19,19 @@ module.exports = (app) => {
         throw err;
       });
 
-    if (!user) return res.status(400).send({ msg: 'Usuário ou Senha Inválidos' });
+    if (!user) return res.status(400).send({ msg: 'E-mail ou Senha Inválidos' });
+    // eslint-disable-next-line eqeqeq
+    if (user.status == 'blocked') return res.status(401).send({ msg: 'Usuário bloqueado! Entre em contato com o administrador' });
     if (user.deleted_at) return res.status(401).send({ msg: 'Usuário desativado! Entre em contato com o administrador' });
 
     const isMatch = await comparePassword(req.body.password, user.password);
-    if (!isMatch) return res.status(401).send({ msg: 'Usuário ou Senha Inválidos' });
+    if (!isMatch) return res.status(401).send({ msg: 'E-mail ou Senha Inválidos' });
 
     const now = Math.floor(Date.now() / 1000);
     const days = Number(process.env.DAYS_TOKEN) || 3;
 
     const payload = {
       id: user.id,
-      first_name: user.first_name,
-      last_name: user.last_name,
-      status: user.status,
       iat: now,
       exp: now + (60 * 60 * 24 * days),
     };

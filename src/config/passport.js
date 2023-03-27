@@ -11,7 +11,7 @@ module.exports = (app) => {
   };
 
   const strategy = new Strategy(params, async (payload, done) => {
-    app.db('participants')
+    app.db('users')
       .where({ id: payload.id })
       .first()
       .then((user) => done(null, user ? { ...payload } : false))
