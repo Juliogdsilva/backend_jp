@@ -42,6 +42,13 @@ module.exports = (app) => {
     .post(controllers.logBatch.save)
     .get(controllers.logBatch.get);
 
+  // ------  LOG CODES ------
+  app
+    .route('/log_codes')
+    .all(app.src.config.passport.authenticate())
+    // .post(controllers.logBatch.save)
+    .get(controllers.logCodes.get);
+
   // ------  CODES ------
   app
     .route('/codes')
@@ -53,6 +60,11 @@ module.exports = (app) => {
     .route('/codes/:id')
     .all(app.src.config.passport.authenticate())
     .get(controllers.codes.getById);
+
+  app
+    .route('/check_code')
+    .all(app.src.config.passport.authenticate())
+    .post(controllers.access.checkQrcode);
 
   // ------  COMMON REQUESTS ------
   app.get('/version', (req, res) => res.status(200).send({ version: pjson.version }));

@@ -10,7 +10,7 @@ exports.up = function (knex) {
     t.increments('id').primary().unsigned();
     t.integer('code_id').unsigned().notNullable().references('id')
       .inTable('codes');
-    t.string('action').unique().notNullable();
+    t.string('action').notNullable();
     t.text('description').nullable();
     t.integer('created_by').unsigned().nullable().references('id')
       .inTable('users');

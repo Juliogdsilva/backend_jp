@@ -9,15 +9,15 @@ module.exports = (app) => {
     isCPFValid,
     justNumbers,
   } = app.src.tools.validation;
-  const { generatorHashCode } = app.src.tools.generator;
+  const { encryptQRcode } = app.src.tools.encrypt;
   const { modelCodes } = app.src.models.codes;
 
-  const generatorCode = async (batch, number) => {
+  const generatorCode = async (batchId, batch, number) => {
     const code = {};
     code.code = `JP${batch}AC${number}`;
 
-    code.code = await generatorHashCode(code.code);
-    code.batch_id = batch;
+    code.code = await encryptQRcode(code.code);
+    code.batch_id = batchId;
     code.batch_number = number;
 
     const newCode = await app
