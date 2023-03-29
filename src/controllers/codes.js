@@ -86,8 +86,8 @@ module.exports = (app) => {
 
     const search = req.query.search || false;
 
-    const users = await app.db('codes as c')
-      .select('c.id', 'c.name', 'c.phone', 'c.email', 'c.note', 'c.status', 'c.batch_number as number', 'bt.name as batch')
+    const codes = await app.db('codes as c')
+      .select('c.id', 'c.code', 'c.name', 'c.phone', 'c.email', 'c.note', 'c.status', 'c.batch_number as number', 'bt.name as batch')
       .leftJoin('batch as bt', 'bt.id', 'c.batch_id')
       .modify((query) => {
         if (search) {
@@ -106,7 +106,7 @@ module.exports = (app) => {
         throw err;
       });
 
-    return res.status(200).send({ ...users });
+    return res.status(200).send({ ...codes });
   };
 
   const getById = async (req, res) => {

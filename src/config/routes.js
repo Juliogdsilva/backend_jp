@@ -52,7 +52,7 @@ module.exports = (app) => {
   // ------  CODES ------
   app
     .route('/codes')
-    .all(app.src.config.passport.authenticate())
+    // .all(app.src.config.passport.authenticate())
     .put(controllers.codes.save)
     .get(controllers.codes.get);
 
