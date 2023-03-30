@@ -45,7 +45,7 @@ module.exports = (app) => {
   // ------  LOG CODES ------
   app
     .route('/log_codes')
-    .all(app.src.config.passport.authenticate())
+    // .all(app.src.config.passport.authenticate())
     // .post(controllers.logBatch.save)
     .get(controllers.logCodes.get);
 
@@ -58,7 +58,7 @@ module.exports = (app) => {
 
   app
     .route('/codes/:id')
-    .all(app.src.config.passport.authenticate())
+    // .all(app.src.config.passport.authenticate())
     .get(controllers.codes.getById);
 
   app

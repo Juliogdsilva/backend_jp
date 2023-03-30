@@ -48,13 +48,13 @@ module.exports = (app) => {
 
     const currentPage = Number(req.query.page) || 1;
     const perPage = Number(req.query.perPage) || 10;
-    const code = req.query.code || null;
+    const id = req.query.id || null;
 
     const logs = await app.db('log_codes')
       .select('*')
       .modify((query) => {
-        if (code) {
-          query.where('code_id', code);
+        if (id) {
+          query.where('code_id', id);
         }
       })
       .orderBy('created_at', 'desc')

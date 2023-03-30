@@ -116,9 +116,8 @@ module.exports = (app) => {
         .status(400)
         .send({ msg: 'Verifique os parâmetro da requisição' });
     }
-
     const code = await app.db('codes as c')
-      .select('c.id', 'c.name', 'c.phone', 'c.email', 'c.note', 'c.status', 'c.batch_number as number', 'bt.name as batch')
+      .select('c.*', 'c.batch_number as number', 'bt.name as batch')
       .leftJoin('batch as bt', 'bt.id', 'c.batch_id')
       .where('c.id', req.params.id)
       .first()
