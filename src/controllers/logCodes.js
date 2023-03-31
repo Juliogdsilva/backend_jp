@@ -22,6 +22,7 @@ module.exports = (app) => {
   //     existsOrError(existsBatch, 'Lote não existente ou inativo');
   //     existsOrError(logBatch.quantity, 'Quantidade de codigos não informado');
   //     if (existsBatch.limit)
+  // eslint-disable-next-line max-len
   // notExistsOrError((logBatch.quantity + existsBatch.limit > existsBatch.limit), 'Quantidade de codigos maior que permitido');
   //     logBatch.start_number = existsBatch.current_quantity;
   //     logBatch.last_number = existsBatch.current_quantity + logBatch.quantity;
@@ -50,8 +51,10 @@ module.exports = (app) => {
     const perPage = Number(req.query.perPage) || 10;
     const id = req.query.id || null;
 
-    const logs = await app.db('log_codes')
-      .select('*')
+    const logs = await app.db('log_codes as lc')
+      .select('lc.*', 'c.batch_number', 'bt.name as batch_name')
+      .leftJoin('codes as c', 'c.id', 'lc.code_id')
+      .leftJoin('batch as bt', 'bt.id', 'c.batch_id')
       .modify((query) => {
         if (id) {
           query.where('code_id', id);

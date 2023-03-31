@@ -10,20 +10,20 @@ module.exports = (app) => {
   // ------  PERMISSIONS ------
   app
     .route('/permissions')
-    .all(app.src.config.passport.authenticate())
+    // .all(app.src.config.passport.authenticate())
     .post(controllers.permissions.save)
     .get(controllers.permissions.get);
 
   // ------  USERS ------
   app
     .route('/users')
-    .all(app.src.config.passport.authenticate())
+    // .all(app.src.config.passport.authenticate())
     .post(controllers.users.save)
     .get(controllers.users.get);
 
   app
     .route('/users/:id')
-    .all(app.src.config.passport.authenticate())
+    // .all(app.src.config.passport.authenticate())
     .put(controllers.users.save)
     .get(controllers.users.getById)
     .delete(controllers.users.del);
@@ -31,14 +31,14 @@ module.exports = (app) => {
   // ------  BATCH ------
   app
     .route('/batch')
-    .all(app.src.config.passport.authenticate())
+    // .all(app.src.config.passport.authenticate())
     .post(controllers.batch.save)
     .get(controllers.batch.get);
 
   // ------  LOG BATCH ------
   app
     .route('/log_batch')
-    .all(app.src.config.passport.authenticate())
+    // .all(app.src.config.passport.authenticate())
     .post(controllers.logBatch.save)
     .get(controllers.logBatch.get);
 
@@ -63,8 +63,13 @@ module.exports = (app) => {
 
   app
     .route('/check_code')
-    .all(app.src.config.passport.authenticate())
+    // .all(app.src.config.passport.authenticate())
     .post(controllers.access.checkQrcode);
+
+  app
+    .route('/report_code/:id')
+    // .all(app.src.config.passport.authenticate())
+    .get(controllers.reports.reportCodes);
 
   // ------  COMMON REQUESTS ------
   app.get('/version', (req, res) => res.status(200).send({ version: pjson.version }));

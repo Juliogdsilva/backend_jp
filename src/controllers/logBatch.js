@@ -21,12 +21,13 @@ module.exports = (app) => {
       existsOrError(logBatch.quantity, 'Quantidade de codigos não informado');
       if (existsBatch.limit) notExistsOrError((logBatch.quantity + existsBatch.limit > existsBatch.limit), 'Quantidade de codigos maior que permitido');
       logBatch.start_number = existsBatch.current_quantity;
-      logBatch.last_number = existsBatch.current_quantity + logBatch.quantity;
+      logBatch.last_number = (Number(existsBatch.current_quantity) + Number(logBatch.quantity));
     } catch (msg) {
       return res.status(400).send({ msg });
     }
 
-    logBatch.created_by = req.user.id;
+    // logBatch.created_by = req.user.id;
+    logBatch.created_by = 1;
 
     await app
       .db('log_batch')
@@ -47,8 +48,9 @@ module.exports = (app) => {
     const perPage = Number(req.query.perPage) || 10;
 
     const logs = await app.db('log_batch as lb')
-      .select('lb.*', 'bt.name as batch')
+      .select('lb.*', 'bt.name as batch_name', 'bt.limit as batch_limit', 'u.name as user_name')
       .leftJoin('batch as bt', 'bt.id', 'lb.batch_id')
+      .leftJoin('users as u', 'u.id', 'lb.created_by')
       .paginate({ perPage, currentPage, isLengthAware: true })
       .catch((err) => {
         res.status(500).send({ msg: 'Erro inesperado', status: true });

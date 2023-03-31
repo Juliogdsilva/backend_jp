@@ -1,84 +1,54 @@
 const Excel = require('exceljs');
 
 module.exports = (app) => {
-  const reports = async (req, res) => {
+  const reportCodes = async (req, res) => {
+    if (!req.params.id) {
+      return res
+        .status(400)
+        .send({ msg: 'Verifique os parâmetro da requisição' });
+    }
     const date = new Date();
     const workbook = new Excel.Workbook();
     const worksheet = workbook.addWorksheet('Report');
     worksheet.columns = [
-      { header: 'Cod.', key: 'id', width: 10 },
-      { header: 'Nome', key: 'first_name', width: 32 },
-      { header: 'Sobrenome', key: 'last_name', width: 32 },
-      { header: 'Email', key: 'email', width: 32 },
-      { header: 'Telefone', key: 'phone', width: 15 },
-      { header: 'Nascimento', key: 'birthdate', width: 15 },
-      { header: 'Empresa', key: 'company', width: 15 },
-      { header: 'Acompanhante?', key: 'companion', width: 10 },
-      { header: 'T. Doc', key: 'document_type', width: 15 },
-      { header: 'N. Doc', key: 'doc_number', width: 15 },
-      { header: 'N. Esp?', key: 'special_needs', width: 10 },
-      { header: 'N. Esp', key: 'special_needs_describe', width: 15 },
-      { header: 'Data Voo ida', key: 'arrival_date', width: 10 },
-      { header: 'Hora Voo ida', key: 'arrival_time', width: 10 },
-      { header: 'N. Voo ida', key: 'flight_number', width: 10 },
-      { header: 'Data Voo Volta', key: 'departure_date', width: 10 },
-      { header: 'Hora Voo Volta', key: 'departure_time', width: 10 },
-      { header: 'N. Voo Volta', key: 'flight_number_departure', width: 10 },
-      { header: 'Alergia?', key: 'have_allergy', width: 10 },
-      { header: 'Alergia', key: 'allergy', width: 15 },
-      { header: 'Pacote', key: 'registration_fee', width: 10 },
-      { header: 'Carta?', key: 'letter', width: 10 },
-      { header: 'Status', key: 'status', width: 10 },
+      { header: 'Cod.', key: 'code', width: 10 },
+      { header: 'Lote', key: 'batch_name', width: 32 },
       { header: 'Criado ', key: 'created_at', width: 10 },
     ];
 
-    const participants = await app.db('participants')
-      .select('*')
-      .whereNull('deleted_at')
-      .then()
+    const log = await app.db('log_batch as lb')
+      .select('lb.*', 'bt.name as batch_name')
+      .leftJoin('batch as bt', 'bt.id', 'lb.batch_id')
+      .where('lb.id', req.params.id)
+      .first()
       .catch((err) => {
         res.status(500).send({ msg: 'Erro inesperado', status: true });
         throw err;
       });
 
-    participants.forEach((seller) => {
+    const codes = await app.db('codes')
+      .select('code', 'created_at')
+      .where({ batch_id: log.batch_id })
+      .andWhere('batch_number', '>=', log.start_number)
+      .andWhere('batch_number', '<=', log.last_number);
+
+    codes.forEach((item) => {
       worksheet.addRow({
-        id: seller.id,
-        first_name: seller.first_name,
-        last_name: seller.last_name,
-        email: seller.email,
-        phone: seller.phone,
-        birthdate: seller.birthdate,
-        company: seller.company,
-        companion: seller.companion,
-        document_type: seller.document_type,
-        doc_number: seller.doc_number,
-        special_needs: seller.special_needs,
-        special_needs_describe: seller.special_needs_describe,
-        arrival_date: seller.arrival_date,
-        arrival_time: seller.arrival_time,
-        flight_number: seller.flight_number,
-        departure_date: seller.departure_date,
-        departure_time: seller.departure_time,
-        flight_number_departure: seller.flight_number_departure,
-        have_allergy: seller.have_allergy,
-        allergy: seller.allergy,
-        registration_fee: seller.registration_fee,
-        letter: seller.letter,
-        status: seller.status,
-        created_at: seller.created_at,
+        code: item.code,
+        batch_name: log.batch_name,
+        created_at: item.created_at,
       });
     });
 
     res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
     // eslint-disable-next-line no-useless-concat
-    res.setHeader('Content-Disposition', 'attachment; filename=' + `report_${date.getTime()}.xlsx`);
+    res.setHeader('Content-Disposition', 'attachment; filename=' + `codes_${date.getTime()}.xlsx`);
 
     await workbook.xlsx.write(res);
-    res.status(200).end();
+    return res.status(200).end();
   };
 
   return {
-    reports,
+    reportCodes,
   };
 };

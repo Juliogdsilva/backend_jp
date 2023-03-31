@@ -96,6 +96,7 @@ module.exports = (app) => {
             this.where('c.name', 'like', `%${search}%`);
             this.orWhere('c.phone', 'like', `%${search}%`);
             this.orWhere('c.email', 'like', `%${search}%`);
+            this.orWhere('c.batch_number', 'like', `%${search}%`);
           });
         }
       })
