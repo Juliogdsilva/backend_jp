@@ -29,16 +29,72 @@ module.exports = (app) => {
       code = await app.db('codes as c')
         .select('c.id', 'c.batch_id', 'bt.name as batch_name', 'c.batch_number', 'c.name', 'c.phone', 'c.email', 'c.note', 'c.status', 'c.created_at', 'c.updated_at')
         .leftJoin('batch as bt', 'bt.id', 'c.batch_id')
-        .where('c.code', hash);
+        .where('c.code', hash)
+        .first();
 
       existsOrError(code, 'Codigo não existente');
-      return res.status(200).send({ data: code });
+      res.status(200).send({ data: code });
+
+      app.db('log_codes')
+        .insert({
+          code_id: code.id,
+          action: 'consulted',
+          description: 'Consulta pela checagem',
+          created_by: 1,
+        })
+        .then()
+        .catch((err) => {
+          throw err;
+        });
     } catch (msg) {
       return res.status(400).send({ msg });
     }
+    return false;
+  };
+
+  const access = async (req, res) => {
+    const hash = req.body.code;
+    const regexHash = /(\w+)=$/;
+    const regexJP = /JP(\w{0,3})AC(\d+)/;
+
+    try {
+      existsOrError(hash, 'QrCode não informado');
+      existsOrError(regexHash.test(hash), 'Qrcode inválido');
+
+      let code = await decryptQRcode(hash);
+      existsOrError(regexJP.test(code), 'Qrcode inválido');
+      // const batchName = code.replace(regex, '$1');
+      // const number = code.replace(regex, '$2');
+
+      code = await app.db('codes as c')
+        .select('c.id', 'c.batch_id', 'bt.name as batch_name', 'c.batch_number', 'c.name', 'c.phone', 'c.email', 'c.note', 'c.status', 'c.created_at', 'c.updated_at')
+        .leftJoin('batch as bt', 'bt.id', 'c.batch_id')
+        .where('c.code', hash)
+        .first();
+
+      existsOrError(code, 'Codigo não existente');
+      res.status(204).send();
+
+      app.db('log_codes')
+        .insert({
+          code_id: code.id,
+          action: 'consulted',
+          description: 'Consulta pela Catraca',
+          created_by: 1,
+        })
+        .then()
+        .catch((err) => {
+          throw err;
+        });
+    } catch (msg) {
+      return res.status(400).send({ msg });
+    }
+
+    return false;
   };
 
   return {
     checkQrcode,
+    access,
   };
 };

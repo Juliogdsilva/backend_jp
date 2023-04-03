@@ -65,6 +65,14 @@ module.exports = (app) => {
     .route('/check_code')
     // .all(app.src.config.passport.authenticate())
     .post(controllers.access.checkQrcode);
+  app
+    .route('/active_code')
+    // .all(app.src.config.passport.authenticate())
+    .post(controllers.codes.activeCode);
+  app
+    .route('/access')
+    // .all(app.src.config.passport.authenticate())
+    .post(controllers.access.access);
 
   app
     .route('/report_code/:id')

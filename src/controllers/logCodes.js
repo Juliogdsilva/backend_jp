@@ -52,9 +52,10 @@ module.exports = (app) => {
     const id = req.query.id || null;
 
     const logs = await app.db('log_codes as lc')
-      .select('lc.*', 'c.batch_number', 'bt.name as batch_name')
+      .select('lc.*', 'c.batch_number', 'bt.name as batch_name', 'u.name as created_name')
       .leftJoin('codes as c', 'c.id', 'lc.code_id')
       .leftJoin('batch as bt', 'bt.id', 'c.batch_id')
+      .leftJoin('users as u', 'u.id', 'lc.created_by')
       .modify((query) => {
         if (id) {
           query.where('code_id', id);
