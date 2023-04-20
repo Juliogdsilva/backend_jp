@@ -80,6 +80,7 @@ module.exports = (app) => {
     .get(controllers.reports.reportCodes);
 
   // ------  COMMON REQUESTS ------
+  app.get('/', (req, res) => res.status(200).send({ msg: 'JP Burger Access' }));
   app.get('/version', (req, res) => res.status(200).send({ version: pjson.version }));
   app.use('*', (req, res) => res.status(404).send({ msg: 'requested endpoint not found' }));
 };
