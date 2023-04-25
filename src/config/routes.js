@@ -70,6 +70,10 @@ module.exports = (app) => {
     // .all(app.src.config.passport.authenticate())
     .post(controllers.codes.activeCode);
   app
+    .route('/deactive_code')
+    // .all(app.src.config.passport.authenticate())
+    .post(controllers.codes.deactiveCode);
+  app
     .route('/access')
     // .all(app.src.config.passport.authenticate())
     .post(controllers.access.access);

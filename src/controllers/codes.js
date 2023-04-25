@@ -92,6 +92,55 @@ module.exports = (app) => {
     return res.status(204).send();
   };
 
+  const deactiveCode = async (req, res) => {
+    if (!req.originalUrl.startsWith('/deactive_code')) { return res.status(403).send({ msg: 'Solicitação invalida.' }); }
+
+    const code = await modelCodes(req.body);
+    code.id = req.body.id;
+    code.status = 'blocked';
+    code.updated_at = new Date();
+
+    if (!code.id) {
+      return res
+        .status(400)
+        .send({ msg: 'Verifique os parâmetro da requisição' });
+    }
+
+    try {
+      const existsCode = await app
+        .db('codes')
+        .where({ id: code.id })
+        .first();
+      existsOrError(existsCode, 'Codigo não existente');
+    } catch (msg) {
+      return res.status(400).send({ msg });
+    }
+
+    app
+      .db('codes')
+      .update(code)
+      .where({ id: code.id })
+      .then()
+      .catch((err) => {
+        res.status(500).send({ msg: 'Erro inesperado' });
+        throw err;
+      });
+
+    app.db('log_codes')
+      .insert({
+        code_id: code.id,
+        action: 'activated',
+        description: 'Ativação de código',
+        created_by: 1,
+      })
+      .then()
+      .catch((err) => {
+        throw err;
+      });
+
+    return res.status(204).send();
+  };
+
   const save = async (req, res) => {
     if (!req.originalUrl.startsWith('/codes')) { return res.status(403).send({ msg: 'Solicitação invalida.' }); }
     if (!req.params.id) return res.status(400).send({ msg: 'Verifique os parâmetro da requisição' });
@@ -180,6 +229,7 @@ module.exports = (app) => {
   return {
     generatorCode,
     activeCode,
+    deactiveCode,
     save,
     get,
     getById,
