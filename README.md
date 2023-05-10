@@ -2,7 +2,7 @@
 
 ### QRCODE Example
 
-_JP_**LOTE**_AC_**NUM**
+_JP_**LOTE**_AC_**NUM**_CD_**Regex(MD5)**
 
 ###### JP -> Sigla restaurante
 

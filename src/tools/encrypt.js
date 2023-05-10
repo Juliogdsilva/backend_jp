@@ -1,5 +1,5 @@
 const bcrypt = require('bcrypt-nodejs');
-const CryptoJS = require('crypto-js');
+const CryptoJS = require('crypto');
 
 module.exports = () => {
   function encryptPassword(password) {
@@ -13,21 +13,34 @@ module.exports = () => {
     return true;
   }
 
-  function encryptQRcode(qrcode) {
-    const encrypted = CryptoJS.DES.encrypt(qrcode, process.env.AUTH_SECRET).toString();
+  function encryptCode(code) {
+    let encrypted = CryptoJS.createHmac('sha256', process.env.AUTH_SECRET)
+      .update(code)
+      .digest('hex');
+    const regex = /(\w{3})(\w{8})(\w+)/;
+    encrypted = encrypted.replace(regex, '$2');
     return encrypted;
   }
 
-  function decryptQRcode(qrcode) {
-    const bytes = CryptoJS.DES.decrypt(qrcode, process.env.AUTH_SECRET);
-    const originalText = bytes.toString(CryptoJS.enc.Utf8);
-    return originalText;
+  function compareCode(allCode) {
+    let isAuthentic = false;
+    const regexCode = /(JP\d{1,}AC\d{1,})DC(\w{8})/;
+    const regexCrypt = /(\w{3})(\w{8})(\w+)/;
+    const code = allCode.replace(regexCode, '$1');
+    const hash = allCode.replace(regexCode, '$2');
+    let encrypted = CryptoJS.createHmac('sha256', process.env.AUTH_SECRET)
+      .update(code)
+      .digest('hex');
+    encrypted = encrypted.replace(regexCrypt, '$2');
+    isAuthentic = encrypted === hash;
+
+    return isAuthentic;
   }
 
   return {
     encryptPassword,
     comparePassword,
-    encryptQRcode,
-    decryptQRcode,
+    encryptCode,
+    compareCode,
   };
 };

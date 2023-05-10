@@ -9,27 +9,24 @@ module.exports = (app) => {
     isCPFValid,
     justNumbers,
   } = app.src.tools.validation;
-  const { decryptQRcode } = app.src.tools.encrypt;
+  const { compareCode } = app.src.tools.encrypt;
   const { modelCodes } = app.src.models.codes;
 
   const checkQrcode = async (req, res) => {
-    const hash = req.body.code;
-    const regexHash = /(\w+)=$/;
-    const regexJP = /JP(\w{0,3})AC(\d+)/;
+    const allCode = req.body.code;
+    const regexJP = /(JP\d{1,}AC\d{1,})DC(\w{8})/;
 
     try {
-      existsOrError(hash, 'QrCode não informado');
-      existsOrError(regexHash.test(hash), 'Qrcode inválido');
+      existsOrError(allCode, 'QrCode não informado');
+      existsOrError(regexJP.test(allCode), 'Qrcode inválido');
 
-      let code = await decryptQRcode(hash);
-      existsOrError(regexJP.test(code), 'Qrcode inválido');
-      // const batchName = code.replace(regex, '$1');
-      // const number = code.replace(regex, '$2');
+      const codeTest = await compareCode(allCode);
+      existsOrError(codeTest, 'Qrcode inválido');
 
-      code = await app.db('codes as c')
+      const code = await app.db('codes as c')
         .select('c.id', 'c.batch_id', 'bt.name as batch_name', 'c.batch_number', 'c.name', 'c.phone', 'c.email', 'c.note', 'c.status', 'c.created_at', 'c.updated_at')
         .leftJoin('batch as bt', 'bt.id', 'c.batch_id')
-        .where('c.code', hash)
+        .where('c.code', allCode)
         .first();
 
       existsOrError(code, 'Codigo não existente');
@@ -53,23 +50,20 @@ module.exports = (app) => {
   };
 
   const access = async (req, res) => {
-    const hash = req.body.code;
-    const regexHash = /(\w+)=$/;
-    const regexJP = /JP(\w{0,3})AC(\d+)/;
+    const allCode = req.body.code;
+    const regexJP = /(JP\d{1,}AC\d{1,})DC(\w{8})/;
 
     try {
-      existsOrError(hash, 'QrCode não informado');
-      existsOrError(regexHash.test(hash), 'Qrcode inválido');
+      existsOrError(allCode, 'QrCode não informado');
+      existsOrError(regexJP.test(allCode), 'Qrcode inválido');
 
-      let code = await decryptQRcode(hash);
-      existsOrError(regexJP.test(code), 'Qrcode inválido');
-      // const batchName = code.replace(regex, '$1');
-      // const number = code.replace(regex, '$2');
+      const codeTest = await compareCode(allCode);
+      existsOrError(codeTest, 'Qrcode inválido');
 
-      code = await app.db('codes as c')
+      const code = await app.db('codes as c')
         .select('c.id', 'c.batch_id', 'bt.name as batch_name', 'c.batch_number', 'c.name', 'c.phone', 'c.email', 'c.note', 'c.status', 'c.created_at', 'c.updated_at')
         .leftJoin('batch as bt', 'bt.id', 'c.batch_id')
-        .where('c.code', hash)
+        .where('c.code', allCode)
         .first();
 
       existsOrError(code, 'Codigo não existente');
