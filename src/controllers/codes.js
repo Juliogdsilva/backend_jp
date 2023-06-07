@@ -12,7 +12,7 @@ module.exports = (app) => {
   const { encryptCode } = app.src.tools.encrypt;
   const { modelCodes } = app.src.models.codes;
 
-  const generatorCode = async (batchId, batch, number) => {
+  const generatorCode = async (batchId, number) => {
     const model = `JP${batchId}AC${number}`;
     const hash = await encryptCode(model);
 
