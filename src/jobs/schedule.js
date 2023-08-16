@@ -26,7 +26,7 @@ module.exports = (app) => {
         throw err;
       });
 
-    for (let i = log.start_number + 1; i <= log.last_number; i++) {
+    for (let i = log.start_number + 1; i <= log.last_number; i + 1) {
       const number = i;
 
       queueQrCode.push({ batchId: log.batch_id, number }, (error) => {
