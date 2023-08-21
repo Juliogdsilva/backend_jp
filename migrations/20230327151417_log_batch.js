@@ -13,6 +13,7 @@ exports.up = function (knex) {
     t.integer('quantity').notNullable();
     t.integer('start_number').unique().notNullable();
     t.integer('last_number').unique().notNullable();
+    t.integer('current_number').unique().notNullable().defaultTo(0);
     t.string('status').notNullable().defaultTo('waiting');
     t.text('description').nullable();
     t.integer('created_by').unsigned().notNullable().references('id')

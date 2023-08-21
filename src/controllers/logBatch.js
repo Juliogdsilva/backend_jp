@@ -51,6 +51,7 @@ module.exports = (app) => {
       .select('lb.*', 'bt.name as batch_name', 'bt.limit as batch_limit', 'u.name as user_name')
       .leftJoin('batch as bt', 'bt.id', 'lb.batch_id')
       .leftJoin('users as u', 'u.id', 'lb.created_by')
+      .orderBy('id', 'desc')
       .paginate({ perPage, currentPage, isLengthAware: true })
       .catch((err) => {
         res.status(500).send({ msg: 'Erro inesperado', status: true });

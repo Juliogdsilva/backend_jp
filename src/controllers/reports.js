@@ -48,7 +48,53 @@ module.exports = (app) => {
     return res.status(200).end();
   };
 
+  const reportDash = async (req, res) => {
+    const batchs = await app
+      .db('batch')
+      .count({ batchs: '*' })
+      .then()
+      .catch((err) => {
+        throw err;
+      });
+
+    const codes = await app
+      .db('codes')
+      .count({ codes: '*' })
+      .then()
+      .catch((err) => {
+        throw err;
+      });
+
+    const codesAtive = await app
+      .db('codes')
+      .count({ codesAtive: '*' })
+      .where('status', 'ative')
+      .then()
+      .catch((err) => {
+        throw err;
+      });
+
+    const codesUsed = await app
+      .db('codes')
+      .count({ codesUsed: '*' })
+      .where('status', 'used')
+      .then()
+      .catch((err) => {
+        throw err;
+      });
+
+    const dash = {
+      ...batchs[0],
+      ...codes[0],
+      ...codesAtive[0],
+      ...codesUsed[0],
+    };
+
+    res.status(200).send(dash);
+  };
+
   return {
     reportCodes,
+    reportDash,
   };
 };

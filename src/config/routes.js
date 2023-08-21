@@ -83,6 +83,11 @@ module.exports = (app) => {
     .all(app.src.config.passport.authenticate())
     .get(controllers.reports.reportCodes);
 
+  app
+    .route('/report_dash')
+    .all(app.src.config.passport.authenticate())
+    .get(controllers.reports.reportDash);
+
   // ------  COMMON REQUESTS ------
   app.get('/', (req, res) => res.status(200).send({ msg: 'JP Burger Access' }));
   app.get('/version', (req, res) => res.status(200).send({ version: pjson.version }));

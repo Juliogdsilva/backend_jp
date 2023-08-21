@@ -4,7 +4,7 @@ module.exports = (app) => {
   const { generatorCode } = app.src.controllers.codes;
 
   const queueQrCode = async.queue(async (task) => {
-    const { batchId, number } = task;
+    const { id, batchId, number } = task;
 
     // GERA O CODIGO
     await generatorCode(batchId, number);
@@ -19,11 +19,15 @@ module.exports = (app) => {
         throw err;
       });
 
-    setTimeout(() => {
-      console.log('teste');
-    }, 30000);
-
-    // callback();
+    //  ATUALIZA O CURRENT NO LOG_BAT
+    app
+      .db('log_batch')
+      .update({ current_number: number })
+      .where({ id })
+      .then()
+      .catch((err) => {
+        throw err;
+      });
   }, process.env.QTD_MAKE_QRCODE);
 
   queueQrCode.drain(() => {

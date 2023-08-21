@@ -26,23 +26,36 @@ module.exports = (app) => {
         throw err;
       });
 
-    for (let i = log.start_number + 1; i <= log.last_number; i + 1) {
+    for (let i = log.start_number + 1; i <= log.last_number; i += 1) {
       const number = i;
 
-      queueQrCode.push({ batchId: log.batch_id, number }, (error) => {
+      queueQrCode.push({ id: log.id, batchId: log.batch_id, number }, (error) => {
         if (error) {
           console.log(error);
         }
       });
     }
   });
+  cron.schedule('* * * * *', async () => {
+    // BUSCA DE PEDIDOS
+    const logs = await app.db('log_batch')
+      .select('id', 'last_number', 'current_number')
+      .where('status', 'processing')
+      .catch((err) => {
+        throw err;
+      });
 
-  // app
-  //       .db('log_batch')
-  //       .update({ status: 'finished' })
-  //       .where({ id: log.id })
-  //       .then()
-  //       .catch((err) => {
-  //         throw err;
-  //       });
+    logs.forEach((log) => {
+      if (log.last_number === log.current_number) {
+        app
+          .db('log_batch')
+          .update({ status: 'finished' })
+          .where({ id: log.id })
+          .then()
+          .catch((err) => {
+            throw err;
+          });
+      }
+    });
+  });
 };
