@@ -37,7 +37,7 @@ module.exports = (app) => {
           code_id: code.id,
           action: 'consulted',
           description: 'Consulta pela checagem',
-          created_by: 1,
+          created_by: req.user.id,
         })
         .then()
         .catch((err) => {
@@ -74,7 +74,7 @@ module.exports = (app) => {
           code_id: code.id,
           action: 'consulted',
           description: 'Consulta pela Catraca',
-          created_by: 1,
+          created_by: req.user.id,
         })
         .then()
         .catch((err) => {

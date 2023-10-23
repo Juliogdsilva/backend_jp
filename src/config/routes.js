@@ -73,10 +73,6 @@ module.exports = (app) => {
     .route('/deactive_code')
     .all(app.src.config.passport.authenticate())
     .post(controllers.codes.deactiveCode);
-  app
-    .route('/access')
-    .all(app.src.config.passport.authenticate())
-    .post(controllers.access.access);
 
   app
     .route('/report_code/:id')
@@ -87,6 +83,13 @@ module.exports = (app) => {
     .route('/report_dash')
     .all(app.src.config.passport.authenticate())
     .get(controllers.reports.reportDash);
+
+  // ------  DEVICES REQUESTS ------
+  app
+    .route('/access')
+    .all(app.src.config.passport.authenticate())
+    .post(controllers.access.access);
+
 
   // ------  COMMON REQUESTS ------
   app.get('/', (req, res) => res.status(200).send({ msg: 'JP Burger Access' }));
