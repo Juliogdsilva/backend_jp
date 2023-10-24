@@ -87,9 +87,12 @@ module.exports = (app) => {
   // ------  DEVICES REQUESTS ------
   app
     .route('/access')
-    .all(app.src.config.passport.authenticate())
+    // .all(app.src.config.passport.authenticate())
     .post(controllers.access.access);
-
+  app
+    .route('/validation')
+    // .all(app.src.config.passport.authenticate())
+    .post(controllers.access.validationCode);
 
   // ------  COMMON REQUESTS ------
   app.get('/', (req, res) => res.status(200).send({ msg: 'JP Burger Access' }));
