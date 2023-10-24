@@ -75,7 +75,7 @@ module.exports = (app) => {
           code_id: code.id,
           action: 'consulted',
           description: 'Consulta pela Catraca',
-          created_by: req.user.id,
+          //created_by: req.user.id,
         })
         .then()
         .catch((err) => {
@@ -108,11 +108,11 @@ module.exports = (app) => {
 
       existsOrError(code, 'Codigo não existente');
 
+
       app
         .db('codes')
         .update({ status: 'validated' })
         .where({ id: code.id })
-        .whereNull('deleted_at')
         .then()
         .catch((err) => {
           res.status(500).send({ msg: 'Erro inesperado' });
@@ -124,7 +124,7 @@ module.exports = (app) => {
           code_id: code.id,
           action: 'validated',
           description: 'Válidado pela Catraca',
-          created_by: req.user.id,
+          //created_by: req.user.id,
         })
         .then()
         .catch((err) => {
@@ -134,7 +134,7 @@ module.exports = (app) => {
       return res.status(400).send({ msg });
     }
 
-    return false;
+    return res.status(204).send();;
   };
 
   return {
