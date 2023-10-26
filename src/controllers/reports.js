@@ -68,7 +68,7 @@ module.exports = (app) => {
     const codesAtive = await app
       .db('codes')
       .count({ codesAtive: '*' })
-      .where('status', 'ative')
+      .where('status', 'active')
       .then()
       .catch((err) => {
         throw err;
@@ -77,7 +77,7 @@ module.exports = (app) => {
     const codesUsed = await app
       .db('codes')
       .count({ codesUsed: '*' })
-      .where('status', 'used')
+      .where('status', 'validated')
       .then()
       .catch((err) => {
         throw err;
